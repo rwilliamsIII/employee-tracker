@@ -32,6 +32,25 @@ function userPrompt(){
         const userSelect = res.userTask
         switch(userSelect){
             case "Add Department":
+                inquirer.prompt([
+                    {
+                        type: "input",
+                        message: "Please enter the name of the department you would like to add:",
+                        name: "new_dept"
+                    }
+                ])
+                .then(function(response){
+                    connection.query(
+                        "INSERT INTO departments SET ?",
+                        {
+                            new_dept: response.new_dept
+                        },
+                        function (err) {
+                            if (err) throw err;
+                            console.log("Department Added!")
+                        }
+                    )
+                })
         }
     })
 }
