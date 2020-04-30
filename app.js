@@ -185,7 +185,103 @@ function userPrompt(){
                     }
                 );
                 break;
-            
+            case "Delete Department":
+                connection.query(
+                    "SELECT departments.id, departments.department_name, roles.title, roles.salary, employees.first_name, employees.last_name FROM departments LEFT JOIN roles ON (departments.id = roles.department_id) LEFT JOIN employees ON (roles.id = employees.role_id)", function (err, departments) {
+                        if (err) throw err;
+                        departments.length > 0 && console.table(departments);
+                        inquirer.prompt([
+                            {
+                                type: "list",
+                                choices: () => departments.map(department => `${department.id} ${department.department_name}`),
+                                message: "Select department you would like to delete:",
+                                name: "deleteDepartment"
+                            }
+                        ])
+                        .then(function(ans){
+                            connection.query(
+                                "DELETE FROM departments WHERE id = ?",
+                                [ans.deleteDepartment.slice(0,2).trim()],
+                                function (err, res) {
+                                    if (err) throw err;
+                                    connection.query(
+                                        "SELECT departments.id, departments.department_name, roles.title, roles.salary, employees.first_name, employees.last_name FROM departments LEFT JOIN roles ON (departments.id = roles.department_id) LEFT JOIN employees ON (roles.id = employees.role_id)", function (err, res) {
+                                            if (err) throw err;
+                                            res.length > 0 && console.table(res);
+                                            userPrompt();
+                                        }
+                                    )
+                                }
+                            )
+                        });
+                    }
+                )
+                break;
+            case "Delete Employee":
+                connection.query(
+                    "SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.department_name FROM employees LEFT JOIN roles ON (employees.role_id = roles.id) LEFT JOIN departments ON (roles.department_id = departments.id)", function (err, employees) {
+                        if (err) throw err;
+                        employees.length > 0 && console.table(employees);
+                        inquirer.prompt([
+                            {
+                                type: "list",
+                                choices: () => employees.map(employee => `${employee.first_name} ${employee.last_name} ${employee.id}`),
+                                message: "Select employee you would like to delete:",
+                                name: "deleteEmployee"
+                            }
+                        ])
+                        .then(function(ans){
+                            connection.query(
+                                "DELETE FROM employees WHERE id = ?",
+                                [ans.deleteEmployee.slice(0,2).trim()],
+                                function (err, res) {
+                                    if (err) throw err;
+                                    connection.query(
+                                        "SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.department_name FROM employees LEFT JOIN roles ON (employees.role_id = roles.id) LEFT JOIN departments ON (roles.department_id = departments.id)", function (err, res) {
+                                            if (err) throw err;
+                                            res.length > 0 && console.table(res);
+                                            userPrompt();
+                                        }
+                                    )
+                                }
+                            )
+                        });
+                    }
+                )
+                break;
+            case "Delete Role":
+                connection.query(
+                    "SELECT roles.id, roles.title, roles.salary, departments.department_name FROM roles LEFT JOIN departments ON (roles.department_id = departments.id)", function(err, roles) {
+                        if (err) throw err;
+                        roles.length > 0 && console.table(roles);
+                        inquirer.prompt([
+                            {
+                                type: "list",
+                                choices: () => roles.map(role => `${role.id} ${role.title}`),
+                                message: "Select the role you would like to delete:",
+                                name: "deleteRole"
+                            }
+                        ])
+                        .then(function(ans){
+                            connection.query(
+                                "DELETE FROM roles WHERE id = ?",
+                                [ans.deleteRole.slice(0,2).trim()],
+                                function (err, res){
+                                    if (err) throw err;
+                                    connection.query(
+                                        "SELECT roles.id, roles.title, roles.salary, departments.department_name FROM roles LEFT JOIN departments ON (roles.department_id = departments.id)", function(err, res) {
+                                            if (err) throw err;
+                                            res.length > 0 && console.table(res);
+                                            userPrompt();
+                                        }
+                                    )
+                                }
+                            )
+                        });
+                    }
+                )
+                break;
+            case "Update Employee Role":
         }
     })
 }
