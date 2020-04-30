@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const connection = mysql.createConnection({
     host: "localhost",
-    port: 5000,
+    port: 3306,
     user: "root",
     password: process.env.PASSWORD,
     database: "employee_db"
