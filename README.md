@@ -32,7 +32,6 @@ ES6,Node.JS,GitHUB,Inquirer
 
 * #### Name: Robert Williams
 * #### GitHUB: https://github.com/rwilliamsIII
-* #### Live Link: https://fathomless-waters-14376.herokuapp.com/
 * #### Portfolio: [https://rwilliamsiii.github.io/Portfolio/](https://rwilliamsiii.github.io/Portfolio/)
 * #### Email: robert@a3marketing.com
 * #### LinkedIN: [https://www.linkedin.com/in/robertwilliams2715/](https://www.linkedin.com/in/robertwilliams2715/)
