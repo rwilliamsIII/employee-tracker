@@ -48,9 +48,15 @@ function userPrompt(){
                         function (err) {
                             if (err) throw err;
                             console.log("Department Added!")
+                            connection.query("SELECT departments.id, departments.new_dept, roles.title, roles.salary, employees.first_name, employees.last_name FROM departments LEFT JOIN roles ON (departments.id = roles.dept_id) LEFT JOIN employees ON (roles.id = employees.role_id)", function(err, res){
+                                if (err) throw err;
+                                res.length > 0 && console.table(res);
+                                userPrompt();
+                            });
                         }
-                    )
-                })
+                    );
+                });
+                break;
         }
     })
 }
