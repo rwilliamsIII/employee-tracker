@@ -36,19 +36,19 @@ function userPrompt(){
                     {
                         type: "input",
                         message: "Please enter the name of the department you would like to add:",
-                        name: "new_dept"
+                        name: "department_name"
                     }
                 ])
                 .then(function(response){
                     connection.query(
                         "INSERT INTO departments SET ?",
                         {
-                            new_dept: response.new_dept
+                            department_name: response.department_name,
                         },
                         function (err) {
                             if (err) throw err;
                             console.log("Department Added!")
-                            connection.query("SELECT departments.id, departments.new_dept, roles.title, roles.salary, employees.first_name, employees.last_name FROM departments LEFT JOIN roles ON (departments.id = roles.dept_id) LEFT JOIN employees ON (roles.id = employees.role_id)", function(err, res){
+                            connection.query("SELECT departments.id, departments.department_name, roles.title, roles.salary, employees.first_name, employees.last_name FROM departments LEFT JOIN roles ON (departments.id = roles.dept_id) LEFT JOIN employees ON (roles.id = employees.role_id)", function(err, res){
                                 if (err) throw err;
                                 res.length > 0 && console.table(res);
                                 userPrompt();
@@ -92,10 +92,10 @@ function userPrompt(){
                                     connection.query(
                                         "INSERT INTO employees SET ?",
                                         {
-                                            first_name = ans.first_name,
-                                            last_name = ans.last_name,
-                                            role_id = ans.role_id.slice(0,2).trim(),
-                                            manager_id = ans.manager_id.slice(0,2).trim()
+                                            first_name: ans.first_name,
+                                            last_name: ans.last_name,
+                                            role_id: ans.role_id.slice(0,2).trim(),
+                                            manager_id: ans.manager_id.slice(0,2).trim()
                                         },
                                         function (err) {
                                             if (err) throw err;
