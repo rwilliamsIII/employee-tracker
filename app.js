@@ -282,6 +282,53 @@ function userPrompt(){
                 )
                 break;
             case "Update Employee Role":
+                connection.query(
+                    "SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.department_name FROM employees LEFT JOIN roles ON (employees.role_id = roles.id) LEFT JOIN departments ON (roles.department_id = departments.id)", function (err, roles) {
+                        if (err) throw err;
+                        connection.query(
+                            "SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.department_name FROM employees LEFT JOIN roles ON (employees.role_id = roles.id) LEFT JOIN departments ON (roles.department_id = departments.id)", function (err, employees) {
+                                if (err) throw err;
+                                inquirer.prompt([
+                                    {
+                                        type: "list",
+                                        choices: () => employees.map(employee => `${employee.first_name} ${employee.last_name} ${employee.id}`),
+                                        message: "Select employee you would like to update:",
+                                        name: "updateEmployee"
+                                    },
+                                    {
+                                        type: "list",
+                                        choices: () => roles.map(role => `${role.id} ${role.title}`),
+                                        message: "Select updated role for the selected employee:",
+                                        name: "updatedRole"
+                                    }
+                                ])
+                                .then(function(ans){
+                                    connection.query(
+                                        "UPDATE employees SET role_id=? WHERE id=?",
+                                        [ans.updateEmployee.slice(0,1), ans.updatedRole.slice(0,2).trim()],
+                                        function (err, res) {
+                                            if (err) throw err;
+                                            console.log("Employee Updated!")
+                                            connection.query(
+                                                "SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, roles.id, departments.department_id FROM employees LEFT JOIN roles ON (employees.role_id = roles.id) LEFT JOIN departments ON (roles.department_id = departments.id)", function(err, res) {
+                                                    if (err) throw err;
+                                                    res.length > 0 && console.table(res);
+                                                    userPrompt();
+                                                }
+                                            )
+                                        }
+                                    )
+                                });
+                            }
+                        )
+                    }
+                )
+                break;
+            case "Finish":
+                connection.end();
+                break;
+            default:
+                break;
         }
     })
 }
