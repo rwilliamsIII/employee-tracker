@@ -159,6 +159,33 @@ function userPrompt(){
                 )
                 break;
             case "View Departments":
+                connection.query(
+                    "SELECT departments.id, departments.department_name, roles.title, roles.salary, employees.first_name, employees.last_name FROM departments LEFT JOIN roles ON (departments.id = roles.department_id) LEFT JOIN employees ON (roles.id = employees.role_id)", function (err, res) {
+                        if (err) throw err;
+                        res.length > 0 && console.table(res);
+                        userPrompt();
+                    }
+                );
+                break;
+            case "View Employees":
+                connection.query(
+                    "SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, roles.id, departments.department_name FROM employees LEFT JOIN roles ON (employees.role_id = roles.id) LEFT JOIN departments ON (roles.department_id = department_id)", function (err, res) {
+                        if (err) throw err;
+                        res.length > 0 && console.table(res);
+                        userPrompt();
+                    }
+                );
+                break;
+            case "View Roles":
+                connection.query(
+                    "SELECT roles.id, roles.title, roles.salary, departments.department_name FROM roles LEFT JOIN departments ON (roles.department_id = departments_id)", function (err, res) {
+                        if (err) throw err;
+                        res.length > 0 && console.table(res);
+                        userPrompt();
+                    }
+                );
+                break;
+            
         }
     })
 }
